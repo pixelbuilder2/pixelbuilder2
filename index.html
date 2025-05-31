@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>pixelbuilder2</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Orbitron', sans-serif;
+    background: radial-gradient(ellipse at center, #000010 0%, #000000 70%);
+    color: #00ffff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: crosshair;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(45deg, #00ffff33, #ff00ff33);
+    pointer-events: none;
+    mix-blend-mode: screen;
+    z-index: -1;
+    animation: overlayPulse 15s ease-in-out infinite alternate;
+  }
+
+  @keyframes overlayPulse {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.6; }
+  }
+
+  #starsCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -10;
+    pointer-events: none;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 15px;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+  }
+
+  .profile-img {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    border: 3px solid #00ffff;
+    margin: 20px auto;
+    box-shadow: 0 0 25px #00ffff;
+    object-fit: cover;
+  }
+
+  nav {
+    margin: 30px 0;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+  }
+
+  nav button {
+    background: transparent;
+    border: 2px solid #00ffff;
+    color: #00ffff;
+    padding: 14px 32px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 30px;
+    text-shadow: 0 0 15px #00ffff;
+    transition: all 0.3s ease;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+    min-width: 140px;
+  }
+
+  nav button::before {
+    content: "";
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at center, #00ffff88, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  nav button:hover::before {
+    opacity: 1;
+  }
+
+  nav button:active {
+    color: black;
+    background: #00ffff;
+    box-shadow: 0 0 35px #00ffff;
+  }
+
+  nav button.active {
+    background: #00ffff;
+    color: black;
+    box-shadow: 0 0 45px #00ffff;
+  }
+
+  section {
+    display: none;
+    margin-top: 40px;
+    animation: fadeIn 1s ease forwards;
+    color: #80ffff;
+  }
+
+  section.active {
+    display: block;
+  }
+
+  h1 {
+    font-size: 3.8rem;
+    margin-bottom: 20px;
+    color: #00ffff;
+    text-shadow:
+      0 0 35px #00ffff,
+      0 0 80px #00ffff;
+    min-height: 70px;
+    transition: text-shadow 0.5s ease;
+  }
+
+  h1.glow {
+    animation: neonPulse 3s ease infinite alternate;
+  }
+
+  @keyframes neonPulse {
+    0% {
+      text-shadow:
+        0 0 5px #00ffff,
+        0 0 20px #00ffff,
+        0 0 30px #00ffff,
+        0 0 40px #ff00ff,
+        0 0 70px #ff00ff,
+        0 0 80px #ff00ff,
+        0 0 100px #ff00ff,
+        0 0 150px #ff00ff;
+    }
+    100% {
+      text-shadow:
+        0 0 20px #00ffff,
+        0 0 30px #00ffff,
+        0 0 40px #00ffff,
+        0 0 50px #ff00ff,
+        0 0 80px #ff00ff,
+        0 0 90px #ff00ff,
+        0 0 110px #ff00ff,
+        0 0 160px #ff00ff;
+    }
+  }
+
+  p {
+    font-size: 1.35rem;
+    line-height: 1.7;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(25px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2.8rem;
+      min-height: auto;
+    }
+
+    nav {
+      gap: 20px;
+    }
+
+    nav button {
+      font-size: 1rem;
+      padding: 12px 24px;
+      min-width: 120px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      padding: 0 10px;
+    }
+
+    .profile-img {
+      width: 110px;
+      height: 110px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    nav {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    nav button {
+      min-width: 100%;
+      padding: 15px 0;
+      font-size: 1.1rem;
+      border-radius: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starsCanvas"></canvas>
+
+<div class="container">
+
+  <img src="649b7903-0560-4efc-abb6-694d765d6400.png" alt="Profile" class="profile-img" />
+
+  <nav>
+    <button class="active" data-target="home">Home</button>
+    <button data-target="about">About</button>
+    <button data-target="projects">My Projects</button>
+    <button data-target="definition">Définition de site</button>
+    <button data-target="contacte">contacte</button>
+  </nav>
+
+  <section id="home" class="active">
+    <h1 class="glow">welcom to pixelbuilder2</h1>
+    <p>
+    Hi and welcome!
+I’m a passionate web developer who creates beautiful and functional web pages for real businesses and personal brands.
+
+Whether you need a landing page, a portfolio, or a full website — I turn ideas into clean, responsive, and modern web designs.
+
+💻 Every project I build is crafted with care, using the latest technologies to make sure it looks great and works perfectly on all devices.
+
+Scroll down to explore my work and discover how I can help bring your vision to life
+    </p>
+  </section>
+
+  <section id="about">
+    <h1>About Me</h1>
+    <p>
+    Hello! I'm Soulayman, a creative and dedicated web developer with a passion for building modern, responsive, and user-friendly websites.
+
+I specialize in creating clean and functional web pages that not only look great but also serve real purposes — whether it's for a personal portfolio, a business, or an online store.
+
+With every project, I focus on delivering quality, performance, and a design that truly reflects the client's vision.
+
+🌟 I believe in the power of simplicity, smart coding, and always staying up to date with the latest web technologies.
+
+Let’s turn your ideas into reality — one page at a time!
+    </p>
+  </section>
+
+  <section id="projects">
+    <h1>My Projects</h1>
+    <p>
+     In this section, I showcase a collection of web pages and websites that I’ve carefully designed to serve real-world business needs.
+Each project I work on is built to provide practical solutions, attractive design, and a smooth user experience.
+
+🌐 I create professional web pages for:
+
+Small businesses and startups
+
+Online stores
+
+Personal portfolios
+
+Landing pages
+
+✨ My designs are always responsive, fast, and user-friendly on all devices.
+
+If you’re looking for a web page that supports your work or brings your idea to life — you’re in the right place!
+    </p>
+  </section>
+
+  <section id="definition">
+    <h1>Définition de site</h1>
+    <p>
+      Un site web est une interface numérique, un portail vers un univers d'informations et d'interactions, conçu pour connecter les idées, les personnes, et les technologies dans un espace accessible et immersif.
+    </p>
+  </section>
+<section id="contacte" class="active">
+    <h1 class="glow">contacte</h1>
+    <p>email: pixelbuilder2@gmail.com</p>
+    <p>whatssap: +112 65114-9570</p>
+    <p>instagram: pixelbuilder2</p>
+    <p>facebook: pixelbuilder2</p>
+</section>
+   
+</div>
+
+<script>
+  // Stars animation
+  const canvas = document.getElementById('starsCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  let stars = [];
+
+  function initStars() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    stars = [];
+    for(let i=0; i<300; i++) {
+      stars.push({
+        x: Math.random()*w,
+        y: Math.random()*h,
+        radius: Math.random()*1.1 + 0.2,
+        alpha: Math.random(),
+        dx: (Math.random()-0.5)*0.05,
+        dy: (Math.random()-0.5)*0.05
+      });
+    }
+  }
+
+  function animateStars() {
+    ctx.clearRect(0, 0, w, h);
+    stars.forEach(star => {
+      star.x += star.dx;
+      star.y += star.dy;
+      if(star.x < 0) star.x = w;
+      if(star.x > w) star.x = 0;
+      if(star.y < 0) star.y = h;
+      if(star.y > h) star.y = 0;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.radius, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(0, 255, 255, ${star.alpha})`;
+      ctx.shadowColor = '#0ff';
+      ctx.shadowBlur = 8;
+      ctx.fill();
+    });
+    requestAnimationFrame(animateStars);
+  }
+
+  window.addEventListener('resize', initStars);
+  initStars();
+  animateStars();
+
+  // Navigation tabs logic
+  const buttons = document.querySelectorAll('nav button');
+  const sections = document.querySelectorAll('section');
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      buttons.forEach(btn => btn.classList.remove('active'));
+      sections.forEach(sec => sec.classList.remove('active'));
+
+      button.classList.add('active');
+      document.getElementById(button.dataset.target).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+
+</html>
